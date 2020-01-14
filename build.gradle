@@ -94,16 +94,16 @@ repositories {
     mavenCentral()
 }
 
-group = 'io.sixhours.analysis'
+group = 'com.picolov.example'
 version '1.0.0-SNAPSHOT'
 
 targetCompatibility = JavaVersion.VERSION_1_8
 sourceCompatibility = JavaVersion.VERSION_1_8
 
-mainClassName = 'io.sixhours.analysis.App'
+mainClassName = 'com.picolov.example.App'
 
 jar {
-    archiveFileName = "analysis.jar"
+    archiveFileName = "example.jar"
 }
 
 dependencies {
