@@ -1,0 +1,117 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath group: 'de.aaschmid', name: 'gradle-cpd-plugin', version: '3.1'
+    }
+}
+
+plugins {
+    id 'application'
+    id 'java'
+    id 'com.github.spotbugs' version '3.0.0'
+    id 'com.adarshr.test-logger' version '2.0.0'
+}
+
+apply plugin: 'checkstyle'
+apply plugin: 'pmd'
+apply plugin: 'cpd'
+
+checkstyle {
+    toolVersion = '8.12'
+    ignoreFailures = false
+}
+
+spotbugs {
+    toolVersion = '3.1.9'
+    ignoreFailures = false
+    effort = 'max'
+}
+
+pmd {
+    toolVersion = '6.7.0'
+    ignoreFailures = false
+    ruleSetFiles = files("${rootProject.rootDir}/config/pmd/ruleset.xml")
+    ruleSets = []
+    rulePriority = 3
+}
+
+cpd {
+    language = 'java'
+    toolVersion = '6.1.0'
+    minimumTokenCount = 100
+}
+
+cpdCheck {
+    reports {
+        text.enabled = false
+        xml.enabled = true
+    }
+    ignoreAnnotations = true
+    source = sourceSets.main.allJava
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
+
+tasks.withType(Pmd) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
+
+spotbugsMain {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+spotbugsTest {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+testlogger {
+    theme 'standard'
+}
+
+repositories {
+    mavenCentral()
+}
+
+group = 'io.sixhours.analysis'
+version '1.0.0-SNAPSHOT'
+
+targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_1_8
+
+mainClassName = 'io.sixhours.analysis.App'
+
+jar {
+    archiveFileName = "analysis.jar"
+}
+
+dependencies {
+    annotationProcessor 'org.projectlombok:lombok:1.18.2'
+    compileOnly 'org.projectlombok:lombok:1.18.2'
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.assertj:assertj-core:3.11.0'
+    testImplementation 'org.mockito:mockito-core:2.21.0'
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
+}
